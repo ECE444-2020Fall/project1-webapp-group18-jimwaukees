@@ -24,6 +24,28 @@
   color: white;
 }
 
+.App-header div {
+  margin-bottom: 10px;
+}
+
+.ui.fluid.input>input {
+  width: 100% !important;
+}
+
+.search-recipe > input {
+  font-size: medium;
+}
+
+.ingredients-dropdown.ui.search {
+  font-size: initial;
+  width: 600px;
+}
+
+.ingredients-dropdown-search {
+  margin-left: 10px !important;
+  height: 44px;
+}
+
 .App-link {
   color: #61dafb;
 }
