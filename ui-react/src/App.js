@@ -14,14 +14,14 @@ function App() {
   const [activeTab, setActiveTab] = useState('search_recipes');
 
   useEffect(() => {
-    fetch("/get_recipes").then(response => {
+    fetch('/get_recipes').then(response => {
       response.json().then(data => {
         setRecipeCount(data.count);
         setRecipes(data.recipes);
       });
     });
 
-    fetch("/get_recipe").then(response => {
+    fetch('/get_recipe').then(response => {
       response.json().then(data => {
         setSpecialRecipe(data.name);
       });
