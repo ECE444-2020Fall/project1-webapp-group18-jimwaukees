@@ -35,7 +35,7 @@ const handleTabClick = (e, { name }) => {
   return (
     <div className="App">
       <Menu pointing secondary>
-        <Menu.Item>
+        <Menu.Item data-testid="company_logo">
           <img src={image} />
         </Menu.Item>
         <Menu.Item
