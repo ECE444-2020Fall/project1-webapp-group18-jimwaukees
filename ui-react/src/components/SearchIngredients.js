@@ -3,8 +3,7 @@ import { Dropdown, Button, Icon } from 'semantic-ui-react'
 import { ingredients } from './IngredientData'
 
 export function SearchIngredients({ recipeCount, recipes }) {
-    const [ingList, setIngList] = useState([]);
-    const [ingCount, setIngCount] = useState(0);
+    const [ingList, setIngList] = useState([]);  
     const [options, setOptions] = useState(ingredients);
 
     const handleAddition = (e, {value}) => {
@@ -23,7 +22,7 @@ export function SearchIngredients({ recipeCount, recipes }) {
       let params = await new URLSearchParams(ingDict);
       let res = await fetch('/get_recipes?' + params.toString());
       let data = await res.json();
-      recipes = data;      
+      recipes = data;
     }
 
     const {currentValues} = options;

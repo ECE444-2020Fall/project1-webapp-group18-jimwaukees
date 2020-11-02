@@ -38,8 +38,6 @@ def get_recipes():
             'apiKey' : config.api_key,
         }
 
-        print(ingredients)
-
         recipes =  requests.get(
             'https://api.spoonacular.com/recipes/findByIngredients',
             params = params
