@@ -1,25 +1,32 @@
 import React, { useState } from 'react';
 import { Dropdown, Button, Icon } from 'semantic-ui-react'
+import { ingredients } from './IngredientData'
 
 export function SearchIngredients({ recipeCount, recipes }) {
-    const [searchArray, setSearchArray] = useState([]);
+    const [ingList, setIngList] = useState([]);  
+    const [options, setOptions] = useState(ingredients);
 
-    const handleChange = (e, {value}) => {
-        setSearchArray(value);
+    const handleAddition = (e, {value}) => {
+      setOptions([{text: value, value, key: value.toLowerCase()}, ...options]);
     }
 
-    const options = [
-        { key: 'milk', value: 'milk', text: 'Milk' },
-        { key: 'cajun', value: 'cajun', text: 'Cajun' },
-        { key: 'chicken', value: 'chicken', text: 'Chicken' },
-        { key: 'eggs', value: 'eggs', text: 'Eggs' },
-        { key: 'salt', value: 'salt', text: 'Salt' },
-        { key: 'beef', value: 'beef', text: 'Beef' },
-        { key: 'onions', value: 'onions', text: 'Onions' },
-        { key: 'tomato', value: 'tomato', text: 'Tomato' },
-        { key: 'cucumber', value: 'cucumber', text: 'Beef' },
-    ];
-    
+    const handleChange = (e, {value}) => {
+      setIngList(value);
+    }
+
+    const handleClick = async (e) => {
+      let ingDict = {};
+      for(var i = 0; i < ingList.length; i++) {
+        ingDict['ing' + i.toString()] = ingList[i].toLowerCase();
+      }
+      let params = await new URLSearchParams(ingDict);
+      let res = await fetch('/get_recipes?' + params.toString());
+      let data = await res.json();
+      recipes = data;
+    }
+
+    const {currentValues} = options;
+
     return (
         <>
             <div className="dropdown-group">
@@ -28,23 +35,26 @@ export function SearchIngredients({ recipeCount, recipes }) {
                     multiple
                     search
                     selection
+                    allowAdditions
                     options={options}
                     placeholder='Select Ingredients'
                     className="ingredients-dropdown"
                     onChange={handleChange}
+                    onAddItem={handleAddition}
+                    value={currentValues}
                 />
-                <Button icon className="ingredients-dropdown-search">
+                <Button icon className="ingredients-dropdown-search" onClick={handleClick}>
                     Search Recipes
                 </Button>
             </div>
             <div>
-                List of ingredients({searchArray.length}):
+                List of ingredients({ingList.length}):
             </div>
             {
-                searchArray.map(ing => { 
+                ingList.map(ing => {
                     return (
                         <div>
-                            {ing} 
+                            {ing}
                         </div>
                     )
                 })
@@ -53,10 +63,10 @@ export function SearchIngredients({ recipeCount, recipes }) {
                 List of recipes({recipeCount}):
             </div>
             {
-                recipes.map(recipe => { 
+                recipes.map(recipe => {
                     return (
                         <div>
-                            {recipe.name} 
+                            {recipe.name}
                         </div>
                     )
                 })

@@ -14,10 +14,13 @@ def get_recipe():
 @main.route('/get_recipes', methods=['GET'])
 def get_recipes():
     count = 0
-    ingredients = list()
+    ingredients = ''
 
     while request.args.get('ing' + str(count)) != None:
-        ingredients.append(request.args.get('ing' + str(count), type = str))
+        if count == 0:
+            ingredients += request.args.get('ing' + str(count), type = str).replace('+', ' ')
+        else:
+            ingredients += ',+' + request.args.get('ing' + str(count), type = str).replace('+', ' ')
         count += 1
 
     if ingredients:
@@ -30,7 +33,7 @@ def get_recipes():
         params = {
             'ingredients': ingredients,
             'number' : 10,
-            'ranking' : 2,
+            'ranking' : 1,
             'ignorePantry' : 'true',
             'apiKey' : config.api_key,
         }
@@ -42,7 +45,7 @@ def get_recipes():
 
         recipe_instruction = list()
         params = {
-            'apiKey' : config.api_key
+            'apiKey' : config.api_key,
         }
 
         for i in range(len(recipes)):
