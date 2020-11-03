@@ -43,7 +43,7 @@ def get_recipes():
             params = params
         ).json()
 
-        recipe_instruction = list()
+        combined_data = list()
         params = {
             'apiKey' : config.api_key,
         }
@@ -54,32 +54,34 @@ def get_recipes():
                 + str(recipes[i].get('id')) + "/analyzedInstructions",
                 params = params
             )
-            recipe_instruction.append((recipes[i], instructions.json()))
+            combined_data.append({'recipeDetails': recipes[i], 'recipeInstructions': instructions.json()})
 
-        return jsonify({'recipeInstructions': recipe_instruction})
+        return jsonify({'recipes': combined_data})
 
 
 @main.route('/get_spoontacular_recipes', methods=['GET'])
 def get_spoontacular_recipes():
-  # Retrieve recipe name from URL param
-  # recipe_query = request.args.get('recipe')
-  recipe_query = 'pasta'
+    # Retrieve recipe name from URL param
+    # recipe_query = request.args.get('recipe')
+    recipe_query = 'pasta'
 
-  # apiKey: Always need an API key or else you can't make the call to the API
-  # query: Name of recipe to be searched for. Returns results with query string included in the recipe title
-  # number: Returns the number of recipes. JSON response include total number of results from query
-  params = {
-    'apiKey': config.api_key,
-    'query': recipe_query,
-    'number': 20,
-  }
+    # apiKey: Always need an API key or else you can't make the call to the API
+    # query: Name of recipe to be searched for. Returns results with query string included in the recipe title
+    # number: Returns the number of recipes. JSON response include total number of results from query
+    params = {
+        'apiKey': config.api_key,
+        'query': recipe_query,
+        'number': 10,
+        'instructionsRequired': 'true',
+        'addRecipeInformation': 'true',
+        'ignorePantry': 'true',
+        'fillIngredients': 'true',
+    }
 
-  print(f'\n\n\nThese are my params: {params}\n\n\n')
+    # Calling spoontacular API to search for a specific recipe
+    response = requests.get(
+        'https://api.spoonacular.com/recipes/complexSearch',
+        params=params
+    )
 
-  # Calling spoontacular API to search for a specific recipe
-  response = requests.get(
-    'https://api.spoonacular.com/recipes/complexSearch',
-    params=params
-  )
-
-  return response.json()
+    return response.json()
