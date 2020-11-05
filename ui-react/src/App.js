@@ -5,7 +5,21 @@ import { SearchRecipes } from './components/SearchRecipes'
 import { SearchIngredients } from './components/SearchIngredients'
 import { About } from './components/About'
 import { Help } from './components/Help'
-import image from './Placeholder_Icon.png'
+import image from './ezcook.png'
+import Card from './components/Card'
+import { Grid } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+  gridContainer: {
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    paddingTop: '20px'
+
+  }
+
+
+});
 
 function App() {
   const [recipeCount, setRecipeCount] = useState(0);
@@ -32,8 +46,11 @@ const handleTabClick = (e, { name }) => {
   setActiveTab(name);
 };
 
+const gridClass = useStyles();
   return (
+    
     <div className="App">
+     
       <Menu pointing secondary>
         <Menu.Item data-testid="company_logo">
           <img src={image} />
@@ -65,6 +82,33 @@ const handleTabClick = (e, { name }) => {
         {activeTab === 'about_us' ? <About /> : <></>}
         {activeTab === 'help' ? <Help /> : <></>}
       </header>
+       <Grid container spacing ={4} className = { gridClass.gridContainer }>
+      <Grid item xs={12} sm = {6} md = {4}>
+      <Card />
+      </Grid> 
+
+      <Grid item xs={12} sm = {6} md = {4}>
+      <Card />
+      </Grid> 
+
+      <Grid item xs={12} sm = {6} md = {4}>
+      <Card />
+      </Grid> 
+
+      <Grid item xs={12} sm = {6} md = {4}>
+      <Card />
+      </Grid> 
+
+      <Grid item xs={12} sm = {6} md = {4}>
+      <Card />
+      </Grid> 
+
+      <Grid item xs={12} sm = {6} md = {4}>
+      <Card />
+      </Grid> 
+
+      </Grid>
+
     </div>
   );
 }
