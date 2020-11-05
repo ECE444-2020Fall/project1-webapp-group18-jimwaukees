@@ -1,0 +1,12 @@
+# virtual environment
+/venv
+
+# environment variables
+config.py
+
+# python cache files
+*.pyc
+/api/__pycache__
+
+# vscode settings
+/.vscode
