@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menu } from 'semantic-ui-react'
 import './App.css';
 import { SearchRecipes } from './components/SearchRecipes'
@@ -22,33 +22,31 @@ const useStyles = makeStyles({
 });
 
 function App() {
-  const [recipeCount, setRecipeCount] = useState(0);
-  const [recipes, setRecipes] = useState([]);
+    const [recipeCount, setRecipeCount] = useState(0);
+    const [recipes, setRecipes] = useState([]);
+    const [specialRecipe, setSpecialRecipe] = useState('');
+    const [activeTab, setActiveTab] = useState('search_recipes');
 
-  // ? Chris: I think having specialRecipe is kind of redundant since we can get the input directly from the SearchRecipes.js
-  // ? I think if we just pass in setRecipes to set the new recipe list into that component, there's no need for the other useState
-  const [specialRecipe, setSpecialRecipe] = useState('');
-  const [activeTab, setActiveTab] = useState('search_recipes');
+    // ? Chris: I think having specialRecipe is kind of redundant since we can get the input directly from the SearchRecipes.js
+    // ? I think if we just pass in setRecipes to set the new recipe list into that component, there's no need for the other useState
+    useEffect(() => {
+        fetch('/get_recipes').then(response => {
+            response.json().then(data => {
+                setRecipeCount(data.count);
+                setRecipes(data.recipes);
+            });
+        });
 
-  // useEffect(() => {
-  //   // TODO: Disable these fetches because they're calling redundant HTTP requests to the back-end
-  //   // fetch('/get_recipes').then(response => {
-  //   //   response.json().then(data => {
-  //   //     setRecipeCount(data.count);
-  //   //     setRecipes(data.recipes);
-  //   //   });
-  //   // });
+        fetch('/get_recipe').then(response => {
+            response.json().then(data => {
+                setSpecialRecipe(data.name);
+            });
+        });
+    }, []);
 
-  // //   fetch('/get_recipe').then(response => {
-  // //     response.json().then(data => {
-  // //       setSpecialRecipe(data.name);
-  // //     });
-  // //   });
-  // }, []);
-
-const handleTabClick = (e, { name }) => {
-  setActiveTab(name);
-};
+    const handleTabClick = (e, { name }) => {
+        setActiveTab(name);
+    };
 
 const gridClass = useStyles();
   return (
