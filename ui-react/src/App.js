@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menu } from 'semantic-ui-react'
 import './App.css';
 import { SearchRecipes } from './components/SearchRecipes'
@@ -22,30 +22,29 @@ const useStyles = makeStyles({
 });
 
 function App() {
-  const [recipeCount, setRecipeCount] = useState(0);
-  const [recipes, setRecipes] = useState([]);
-  const [specialRecipe, setSpecialRecipe] = useState('');
-  const [activeTab, setActiveTab] = useState('search_recipes');
+    const [recipeCount, setRecipeCount] = useState(0);
+    const [recipes, setRecipes] = useState([]);
+    const [specialRecipe, setSpecialRecipe] = useState('');
+    const [activeTab, setActiveTab] = useState('search_recipes');
 
-  useEffect(() => {
-    fetch('/get_recipes').then(response => {
-      response.json().then(data => {
-        setRecipeCount(data.count);
-        setRecipes(data.recipes);
-      });
-    });
+    useEffect(() => {
+        fetch('/get_recipes').then(response => {
+            response.json().then(data => {
+                setRecipeCount(data.count);
+                setRecipes(data.recipes);
+            });
+        });
 
-    fetch('/get_recipe').then(response => {
-      response.json().then(data => {
-        setSpecialRecipe(data.name);
-      });
-    });
-  }, []);
+        fetch('/get_recipe').then(response => {
+            response.json().then(data => {
+                setSpecialRecipe(data.name);
+            });
+        });
+    }, []);
 
-const handleTabClick = (e, { name }) => {
-  setActiveTab(name);
-};
-
+    const handleTabClick = (e, { name }) => {
+        setActiveTab(name);
+    };
 const gridClass = useStyles();
   return (
     
