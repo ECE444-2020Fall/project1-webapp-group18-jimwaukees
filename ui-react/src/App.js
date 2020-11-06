@@ -24,23 +24,27 @@ const useStyles = makeStyles({
 function App() {
   const [recipeCount, setRecipeCount] = useState(0);
   const [recipes, setRecipes] = useState([]);
+
+  // ? Chris: I think having specialRecipe is kind of redundant since we can get the input directly from the SearchRecipes.js
+  // ? I think if we just pass in setRecipes to set the new recipe list into that component, there's no need for the other useState
   const [specialRecipe, setSpecialRecipe] = useState('');
   const [activeTab, setActiveTab] = useState('search_recipes');
 
-  useEffect(() => {
-    fetch('/get_recipes').then(response => {
-      response.json().then(data => {
-        setRecipeCount(data.count);
-        setRecipes(data.recipes);
-      });
-    });
+  // useEffect(() => {
+  //   // TODO: Disable these fetches because they're calling redundant HTTP requests to the back-end
+  //   // fetch('/get_recipes').then(response => {
+  //   //   response.json().then(data => {
+  //   //     setRecipeCount(data.count);
+  //   //     setRecipes(data.recipes);
+  //   //   });
+  //   // });
 
-    fetch('/get_recipe').then(response => {
-      response.json().then(data => {
-        setSpecialRecipe(data.name);
-      });
-    });
-  }, []);
+  // //   fetch('/get_recipe').then(response => {
+  // //     response.json().then(data => {
+  // //       setSpecialRecipe(data.name);
+  // //     });
+  // //   });
+  // }, []);
 
 const handleTabClick = (e, { name }) => {
   setActiveTab(name);
@@ -50,7 +54,6 @@ const gridClass = useStyles();
   return (
     
     <div className="App">
-     
       <Menu pointing secondary>
         <Menu.Item data-testid="company_logo">
           <img src={image} />
@@ -77,12 +80,12 @@ const gridClass = useStyles();
         />
       </Menu>
       <header className="App-header">
-        {activeTab === 'search_recipes' ? <SearchRecipes searchedRecipe={specialRecipe} /> : <></>}
+        {activeTab === 'search_recipes' ? <SearchRecipes setRecipes={setRecipes} /> : <></>}
         {activeTab === 'search_ingredients' ? <SearchIngredients recipeCount={recipeCount} recipes={recipes} /> : <></>}
         {activeTab === 'about_us' ? <About /> : <></>}
         {activeTab === 'help' ? <Help /> : <></>}
       </header>
-       <Grid container spacing ={4} className = { gridClass.gridContainer }>
+      <Grid container spacing ={4} className = { gridClass.gridContainer }>
       <Grid item xs={12} sm = {6} md = {4}>
       <Card />
       </Grid> 

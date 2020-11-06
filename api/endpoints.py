@@ -6,6 +6,9 @@ import requests
 
 main = Blueprint('main', __name__)
 
+# TODO: Need to rename endpoints
+# TODO: Need to do error checking
+
 @main.route('/get_recipe', methods=['GET'])
 def get_recipe():
     recipe = {'name': 'burger'}
@@ -58,12 +61,10 @@ def get_recipes():
 
         return jsonify({'recipeInstructions': recipe_instruction})
 
-
 @main.route('/get_spoontacular_recipes', methods=['GET'])
 def get_spoontacular_recipes():
   # Retrieve recipe name from URL param
-  # recipe_query = request.args.get('recipe')
-  recipe_query = 'pasta'
+  recipe_query = request.args['recipe']
 
   # apiKey: Always need an API key or else you can't make the call to the API
   # query: Name of recipe to be searched for. Returns results with query string included in the recipe title
@@ -76,10 +77,14 @@ def get_spoontacular_recipes():
 
   print(f'\n\n\nThese are my params: {params}\n\n\n')
 
+  print('Making request to spoonacular...\n')
   # Calling spoontacular API to search for a specific recipe
   response = requests.get(
     'https://api.spoonacular.com/recipes/complexSearch',
     params=params
   )
-
-  return response.json()
+  print(f'Request complete: {response}')
+  recipe_results = response.json()
+  
+  # Converting JSON object into Flask response object
+  return jsonify(recipe_results)
