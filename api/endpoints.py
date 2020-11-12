@@ -1,4 +1,5 @@
 #from api import config
+from api import app
 from flask import Blueprint, jsonify
 from flask import request
 import requests

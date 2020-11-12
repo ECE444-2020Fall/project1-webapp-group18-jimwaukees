@@ -44,3 +44,21 @@ This command starts the app in the development mode. Open http://localhost:3000 
 You can make changes to the front end code and once you save them, they appear on the browser right away if there are no errors. There is an additional README file provided by react in the ui-react folder that provides documentation for other npm commands and useful links.
 
 ### Enjoy development!!!
+
+## Deployment
+This app is deployed using Firebase for the front-end and Heroku for the back-end
+
+### Step 1:
+Ensure Firebase command-line interface is installed. Run `npm install -g firebase-tools` to install.
+
+### Step 2:
+Navigate to the `ui-react/build` folder. Run `npm run build` to create a production build.
+
+### Step 3:
+Navigate to the `ui-react` folder and run `firebase deploy` to deploy the front-end static aspect of the app. This can be viewed at https://ezcook-18.web.app/
+
+### Step 4:
+Downlaod and install the Heorku CLI. Then run `heroku login`
+
+### Step 5:
+To deploy changes, commit and then run `git push heroku {branch_name}:master`. The backend can be viewed at https://ezcook18.herokuapp.com/
