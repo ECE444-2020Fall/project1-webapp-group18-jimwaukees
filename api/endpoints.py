@@ -71,7 +71,7 @@ def get_spoontacular_recipes():
   # apiKey: Always need an API key or else you can't make the call to the API
   # query: Name of recipe to be searched for. Returns results with query string included in the recipe title
   # number: Returns the number of recipes. JSON response include total number of results from query
-    params = {
+  params = {
         'apiKey': config.api_key,
         'query': recipe_query,
         'number': 10,
