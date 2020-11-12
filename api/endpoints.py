@@ -1,20 +1,22 @@
-import config
-
+from api import config
 from flask import Blueprint, jsonify
 from flask import request
 import requests
 
-main = Blueprint('main', __name__)
-
 # TODO: Need to rename endpoints
 # TODO: Need to do error checking
 
-@main.route('/get_recipe', methods=['GET'])
+@app.route('/index')
+@app.route('/')
+def index():
+    return app
+
+@app.route('/get_recipe', methods=['GET'])
 def get_recipe():
     recipe = {'name': 'burger'}
     return jsonify(recipe)
 
-@main.route('/get_recipes', methods=['GET'])
+@app.route('/get_recipes', methods=['GET'])
 def get_recipes():
     count = 0
     ingredients = ''
@@ -61,7 +63,7 @@ def get_recipes():
 
         return jsonify({'recipes': combined_data})
 
-@main.route('/get_spoontacular_recipes', methods=['GET'])
+@app.route('/get_spoontacular_recipes', methods=['GET'])
 def get_spoontacular_recipes():
   # Retrieve recipe name from URL param
   recipe_query = request.args['recipe']
@@ -89,6 +91,6 @@ def get_spoontacular_recipes():
   )
   print(f'Request complete: {response}')
   recipe_results = response.json()
-  
+
   # Converting JSON object into Flask response object
   return jsonify(recipe_results)

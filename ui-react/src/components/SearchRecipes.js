@@ -13,7 +13,7 @@ export function SearchRecipes({ setRecipes }) {
     const handleClick = async () => {
       if (searchQuery && searchQuery !== prevSearch) {
         let params = new URLSearchParams({recipe: searchQuery});
-        const url = `/get_spoontacular_recipes?${params}`;
+        const url = `https://ezcook18.herokuapp.com/get_spoontacular_recipes?${params}`;
 
         let recipeResults = await fetch(url)
           .then((res) => res.json())
@@ -26,13 +26,13 @@ export function SearchRecipes({ setRecipes }) {
 
     return (
         <>
-            <Input 
-              fluid 
-              placeholder='Search...' 
-              size='large' 
-              className="search-recipe" 
-              onChange={handleChange} 
-              
+            <Input
+              fluid
+              placeholder='Search...'
+              size='large'
+              className="search-recipe"
+              onChange={handleChange}
+
               action={
                 <Button icon onClick={handleClick} >
                     <Icon name='search' />
