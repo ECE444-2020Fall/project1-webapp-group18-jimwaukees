@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
-import { Dropdown, Button, Icon } from 'semantic-ui-react';
+import { Dropdown, Button } from 'semantic-ui-react';
 import { ingredients } from './IngredientData';
+import Card from './Card';
 import { RecipeDialog } from './RecipeDialog';
-import { recipeIngredientSearch, recipeNameSearch } from '../mocks/mockRecipe';
+import { Grid } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
-export function SearchIngredients({ recipeCount, recipes }) {
+const useStyles = makeStyles({
+    gridContainer: {
+        paddingLeft: '20px',
+        paddingRight: '20px',
+        paddingTop: '20px'
+    }
+});
+
+export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, setRecipeResults }) {
     const [ingList, setIngList] = useState([]);
     const [options, setOptions] = useState(ingredients);
     const [openDialog, setOpenDialog] = useState(false);
-    const [searchType, setSearchType] = useState('name');
+    const [recipeIndex, setRecipeIndex] = useState(-1);
 
     const handleAddition = (e, { value }) => {
         setOptions([{ text: value, value, key: value.toLowerCase() }, ...options]);
@@ -19,21 +29,31 @@ export function SearchIngredients({ recipeCount, recipes }) {
     };
 
     const handleSearch = async (e) => {
-        let ingDict = {};
-        for (var i = 0; i < ingList.length; i++) {
-            ingDict['ing' + i.toString()] = ingList[i].toLowerCase();
+        let sameSearch = prevIngList.length === ingList.length && prevIngList.every((ing) => ingList.includes(ing));
+        if (!sameSearch && ingList.length > 0) {
+            let ingDict = {};
+            for (var i = 0; i < ingList.length; i++) {
+                ingDict['ing' + i.toString()] = ingList[i].toLowerCase();
+            }
+            let params = await new URLSearchParams(ingDict);
+            let res = await fetch('https://ezcook18.herokuapp.com//get_recipes?' + params.toString());
+            let data = await res.json();
+            setRecipeResults(data);
+            setPrevIngList(ingList);
         }
-        let params = await new URLSearchParams(ingDict);
-        let res = await fetch('https://ezcook18.herokuapp.com/get_recipes?' + params.toString());
-        let data = await res.json();
-        recipes = data;
     };
 
     const handleClose = () => {
         setOpenDialog(false);
     };
 
+    const handleRecipeClick = (index) => {
+        setOpenDialog(true);
+        setRecipeIndex(index);
+    };
+
     const { currentValues } = options;
+    const gridClass = useStyles();
 
     return (
         <>
@@ -56,46 +76,29 @@ export function SearchIngredients({ recipeCount, recipes }) {
                 </Button>
             </div>
             <div>
-                List of ingredients({ingList.length}):
+                Ingredients you searched for({prevIngList.length}):
+                {
+                    prevIngList.map(ing => {
+                        return (
+                            <>
+                                {ing},
+                            </>
+                        )
+                    })
+                }
             </div>
-            {
-                ingList.map(ing => {
-                    return (
-                        <div>
-                            {ing}
-                        </div>
-                    )
-                })
-            }
-            <div>
-                List of recipes({recipeCount}):
-            </div>
-            {
-                recipes.map(recipe => {
-                    return (
-                        <div>
-                            {recipe.name}
-                        </div>
-                    )
-                })
-            }
-            <Button icon onClick={(e) => {
-                setOpenDialog(true);
-                setSearchType('ing');
-            }}>
-                    Open Recipe Ingredient Search
-            </Button>
-            <Button icon onClick={(e) => {
-                setOpenDialog(true);
-                setSearchType('name');
-            }}>
-                    Open Recipe Name Search
-            </Button>
+            <Grid container spacing={4} className={gridClass.gridContainer}>
+                {recipeResults.recipes.map((recipe, index) => (
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Card recipeData={recipe} handleCardClick={() => handleRecipeClick(index)} />
+                    </Grid>
+                ))}
+            </Grid>
             <RecipeDialog
                 open={openDialog}
                 handleClose={handleClose}
-                data={searchType === 'ing' ? recipeIngredientSearch : recipeNameSearch}
-                searchedIngredients={searchType === 'ing' ? ['milk', 'corn', 'potato'] : []}
+                data={recipeIndex >= 0 ? recipeResults.recipes[recipeIndex] : undefined}
+                searchedIngredients={prevIngList}
             />
         </>
     );
