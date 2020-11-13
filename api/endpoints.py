@@ -41,7 +41,7 @@ def get_recipes():
             'number' : 10,
             'ranking' : 1,
             'ignorePantry' : 'true',
-            'apiKey' : api.config,
+            'apiKey' : config.api_key,
         }
 
         recipes =  requests.get(
@@ -51,7 +51,7 @@ def get_recipes():
 
         combined_data = list()
         params = {
-            'apiKey' : api.config,
+            'apiKey' : config.api_key,
         }
 
         for i in range(len(recipes)):
@@ -73,7 +73,7 @@ def get_spoontacular_recipes():
   # query: Name of recipe to be searched for. Returns results with query string included in the recipe title
   # number: Returns the number of recipes. JSON response include total number of results from query
   params = {
-        'apiKey': api.config,
+        'apiKey':config.api_key,
         'query': recipe_query,
         'number': 10,
         'instructionsRequired': 'true',

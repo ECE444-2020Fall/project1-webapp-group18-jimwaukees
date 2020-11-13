@@ -36,7 +36,7 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
                 ingDict['ing' + i.toString()] = ingList[i].toLowerCase();
             }
             let params = await new URLSearchParams(ingDict);
-            let res = await fetch('https://ezcook18.herokuapp.com//get_recipes?' + params.toString());
+            let res = await fetch('https://ezcook18.herokuapp.com/get_recipes?' + params.toString());
             let data = await res.json();
             setRecipeResults(data);
             setPrevIngList(ingList);
