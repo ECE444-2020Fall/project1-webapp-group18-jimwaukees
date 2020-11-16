@@ -11,27 +11,15 @@ import TextField from '@material-ui/core/TextField';
 import './Styles/SearchIngredients.css';
 
 
-const useStyles = makeStyles({
+const gridStyles = makeStyles({
     gridContainer: {
         paddingLeft: '20px',
         paddingRight: '20px',
         paddingTop: '20px'
     },
-    inputRoot: {
-      color: "purple",
-      "& .MuiOutlinedInput-notchedOutline": {
-        borderColor: "green"
-      },
-      "&:hover .MuiOutlinedInput-notchedOutline": {
-        borderColor: "red"
-      },
-      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-        borderColor: "purple"
-      }
-    }
 });
 
-const useStyles2 = makeStyles({
+const searchStyles = makeStyles({
   inputRoot: {
     color: "purple",
     "& .MuiOutlinedInput-notchedOutline": {
@@ -59,11 +47,11 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
     const [openDialog, setOpenDialog] = useState(false);
     const [recipeIndex, setRecipeIndex] = useState(-1);
 
-    const handleAddition = (e, { value }) => {
+    const handleAddition = (e,  value ) => {
         setOptions([{ text: value, value, key: value.toLowerCase() }, ...options]);
     };
 
-    const handleChange = (e, { value }) => {
+    const handleChange = (e,  value ) => {
         setIngList(value);
     };
 
@@ -72,12 +60,18 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
         if (!sameSearch && ingList.length > 0) {
             let ingDict = {};
             for (var i = 0; i < ingList.length; i++) {
-                ingDict['ing' + i.toString()] = ingList[i].toLowerCase();
+                ingDict['ing' + i.toString()] = ingList[i].value.toLowerCase();
             }
             let params = await new URLSearchParams(ingDict);
-            let res = await fetch('https://ezcook18.herokuapp.com/get_recipes?' + params.toString());
-            let data = await res.json();
-            setRecipeResults(data);
+
+            const url = 'https://ezcook18.herokuapp.com/get_recipes?' + params.toString();
+            await fetch(url, {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            })
+            .then((res) => res.json())
+            .then((data) => {setRecipeResults(data);});
+
             setPrevIngList(ingList);
         }
     };
@@ -92,8 +86,8 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
     };
 
     const { currentValues } = options;
-    const gridClass = useStyles();
-    const searchClass = useStyles2();
+    const gridClass = gridStyles();
+    const searchClass = searchStyles();
 
     return (
         <>
@@ -101,10 +95,10 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
                 <Autocomplete
                   className="ingredients-dropdown-search"
                   classes={searchClass}
-                  underlineShow={false}
                   style={{ width: "500px" }}
                   filterSelectedOptions
                   multiple
+                  onChange={handleChange}
                   limitTags={3}
                   disableCloseOnSelect
                   options={options}
@@ -124,22 +118,19 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
                   </Button.Content>
                 </Button>
 
-                {/* <Button icon className="ingredients-dropdown-search-btn" onClick={handleSearch}>
-                    Search Recipes
-                </Button> */}
             </div>
-            {/* <div>
+            <div>
                 Ingredients you searched for({prevIngList.length}):
                 {
                     prevIngList.map(ing => {
                         return (
                             <>
-                                {ing},
+                                {ing.text},
                             </>
                         )
                     })
                 }
-            </div> */}
+            </div>
             <Grid container spacing={4} className={gridClass.gridContainer}>
                 {recipeResults.recipes.map((recipe, index) => (
                     <Grid item xs={12} sm={6} md={4}>

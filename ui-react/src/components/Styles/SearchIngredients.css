@@ -1,3 +1,4 @@
+/* Search Bar CSS - Starts Here */
 .ingredients-dropdown.ui.search {
   font-size: initial;
   width: 600px;
@@ -6,7 +7,9 @@
 .ingredients-dropdown-search {
   margin-left: 10px !important;
 }
+/* Search Bar CSS - Ends Here */
 
+/* Search Button CSS - Starts Here */
 .ui.button.ingredients-dropdown-search-btn {
   margin-left: 10px !important;
   background-color: #2ED573;
@@ -16,3 +19,4 @@
 .ui.animated.button .visible.content {
   margin-bottom: 0;
 }
+/* Search Button CSS - Ends Here */

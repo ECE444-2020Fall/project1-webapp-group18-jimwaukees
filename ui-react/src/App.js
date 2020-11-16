@@ -8,7 +8,7 @@ import { Help } from './components/Help'
 import image from './ezcook.png'
 
 function App() {
-    const [activeTab, setActiveTab] = useState('search_recipes');
+    const [activeTab, setActiveTab] = useState('search_ingredients');
     const [prevIngList, setPrevIngList] = useState([]);
     const [recipeResultsIng, setRecipeResultsIng] = useState({
         recipes: []
