@@ -1,18 +1,57 @@
 import React, { useState } from 'react';
-import { Dropdown, Button } from 'semantic-ui-react';
+import { Button, Icon } from 'semantic-ui-react';
 import { ingredients } from './IngredientData';
 import Card from './Card';
 import { RecipeDialog } from './RecipeDialog';
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
+
+import './Styles/SearchIngredients.css';
+
 
 const useStyles = makeStyles({
     gridContainer: {
         paddingLeft: '20px',
         paddingRight: '20px',
         paddingTop: '20px'
+    },
+    inputRoot: {
+      color: "purple",
+      "& .MuiOutlinedInput-notchedOutline": {
+        borderColor: "green"
+      },
+      "&:hover .MuiOutlinedInput-notchedOutline": {
+        borderColor: "red"
+      },
+      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        borderColor: "purple"
+      }
     }
 });
+
+const useStyles2 = makeStyles({
+  inputRoot: {
+    color: "purple",
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: "white"
+    },
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#2ED573",
+      borderWidth: "2px"
+    },
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#2ED573"
+    },
+    "&.MuiOutlinedInput-root": {
+      borderRadius: "30px"
+    },
+    "&.MuiInputBase-root": {
+      backgroundColor: "white"
+    }
+  }
+})
 
 export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, setRecipeResults }) {
     const [ingList, setIngList] = useState([]);
@@ -54,28 +93,42 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
 
     const { currentValues } = options;
     const gridClass = useStyles();
+    const searchClass = useStyles2();
 
     return (
         <>
             <div className="dropdown-group">
-                <Dropdown
-                    clearable
-                    multiple
-                    search
-                    selection
-                    allowAdditions
-                    options={options}
-                    placeholder='Select Ingredients'
-                    className="ingredients-dropdown"
-                    onChange={handleChange}
-                    onAddItem={handleAddition}
-                    value={currentValues}
+                <Autocomplete
+                  className="ingredients-dropdown-search"
+                  classes={searchClass}
+                  underlineShow={false}
+                  style={{ width: "500px" }}
+                  filterSelectedOptions
+                  multiple
+                  limitTags={3}
+                  disableCloseOnSelect
+                  options={options}
+                  getOptionLabel={(option)=> option.text}
+                  renderInput={(params) => (
+                    <TextField {...params} variant="outlined" label="Select Ingredients" />
+                  )}
                 />
-                <Button icon className="ingredients-dropdown-search" onClick={handleSearch}>
-                    Search Recipes
+                <Button 
+                  className="ingredients-dropdown-search-btn"
+                  animated 
+                  onClick={handleSearch}
+                >
+                  <Button.Content visible>Search Recipes</Button.Content>
+                  <Button.Content hidden>
+                    <Icon name='search' />
+                  </Button.Content>
                 </Button>
+
+                {/* <Button icon className="ingredients-dropdown-search-btn" onClick={handleSearch}>
+                    Search Recipes
+                </Button> */}
             </div>
-            <div>
+            {/* <div>
                 Ingredients you searched for({prevIngList.length}):
                 {
                     prevIngList.map(ing => {
@@ -86,7 +139,7 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
                         )
                     })
                 }
-            </div>
+            </div> */}
             <Grid container spacing={4} className={gridClass.gridContainer}>
                 {recipeResults.recipes.map((recipe, index) => (
                     <Grid item xs={12} sm={6} md={4}>

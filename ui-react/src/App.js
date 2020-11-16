@@ -44,8 +44,8 @@ function App() {
     return (
         <div className="App">
             <Menu pointing secondary>
-                <Menu.Item data-testid="company_logo">
-                    <img src={image} />
+                <Menu.Item className="logo-space" data-testid="company_logo">
+                    <img className="logo" src={image} />
                 </Menu.Item>
                 <Menu.Item
                     name='search_recipes'
@@ -60,11 +60,6 @@ function App() {
                 <Menu.Item
                     name='about_us'
                     active={activeTab === 'about_us'}
-                    onClick={handleTabClick}
-                />
-                <Menu.Item
-                    name='help'
-                    active={activeTab === 'help'}
                     onClick={handleTabClick}
                 />
             </Menu>
