@@ -1,18 +1,45 @@
 import React, { useState } from 'react';
-import { Dropdown, Button } from 'semantic-ui-react';
+import { Button, Icon } from 'semantic-ui-react';
 import { ingredients } from './IngredientData';
 import Card from './Card';
 import { RecipeDialog } from './RecipeDialog';
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 
-const useStyles = makeStyles({
+import './Styles/SearchIngredients.css';
+
+
+const gridStyles = makeStyles({
     gridContainer: {
         paddingLeft: '20px',
         paddingRight: '20px',
         paddingTop: '20px'
-    }
+    },
 });
+
+const searchStyles = makeStyles({
+  inputRoot: {
+    color: "purple",
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: "white"
+    },
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#2ED573",
+      borderWidth: "2px"
+    },
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#2ED573"
+    },
+    "&.MuiOutlinedInput-root": {
+      borderRadius: "30px"
+    },
+    "&.MuiInputBase-root": {
+      backgroundColor: "white"
+    }
+  }
+})
 
 export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, setRecipeResults }) {
     const [ingList, setIngList] = useState([]);
@@ -20,11 +47,11 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
     const [openDialog, setOpenDialog] = useState(false);
     const [recipeIndex, setRecipeIndex] = useState(-1);
 
-    const handleAddition = (e, { value }) => {
+    const handleAddition = (e,  value ) => {
         setOptions([{ text: value, value, key: value.toLowerCase() }, ...options]);
     };
 
-    const handleChange = (e, { value }) => {
+    const handleChange = (e,  value ) => {
         setIngList(value);
     };
 
@@ -33,12 +60,18 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
         if (!sameSearch && ingList.length > 0) {
             let ingDict = {};
             for (var i = 0; i < ingList.length; i++) {
-                ingDict['ing' + i.toString()] = ingList[i].toLowerCase();
+                ingDict['ing' + i.toString()] = ingList[i].value.toLowerCase();
             }
             let params = await new URLSearchParams(ingDict);
-            let res = await fetch('https://ezcook18.herokuapp.com/get_recipes?' + params.toString());
-            let data = await res.json();
-            setRecipeResults(data);
+
+            const url = 'https://ezcook18.herokuapp.com/get_recipes?' + params.toString();
+            await fetch(url, {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            })
+            .then((res) => res.json())
+            .then((data) => {setRecipeResults(data);});
+
             setPrevIngList(ingList);
         }
     };
@@ -53,27 +86,38 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
     };
 
     const { currentValues } = options;
-    const gridClass = useStyles();
+    const gridClass = gridStyles();
+    const searchClass = searchStyles();
 
     return (
         <>
             <div className="dropdown-group">
-                <Dropdown
-                    clearable
-                    multiple
-                    search
-                    selection
-                    allowAdditions
-                    options={options}
-                    placeholder='Select Ingredients'
-                    className="ingredients-dropdown"
-                    onChange={handleChange}
-                    onAddItem={handleAddition}
-                    value={currentValues}
+                <Autocomplete
+                  className="ingredients-dropdown-search"
+                  classes={searchClass}
+                  style={{ width: "500px" }}
+                  filterSelectedOptions
+                  multiple
+                  onChange={handleChange}
+                  limitTags={3}
+                  disableCloseOnSelect
+                  options={options}
+                  getOptionLabel={(option)=> option.text}
+                  renderInput={(params) => (
+                    <TextField {...params} variant="outlined" label="Select Ingredients" />
+                  )}
                 />
-                <Button icon className="ingredients-dropdown-search" onClick={handleSearch}>
-                    Search Recipes
+                <Button 
+                  className="ingredients-dropdown-search-btn"
+                  animated 
+                  onClick={handleSearch}
+                >
+                  <Button.Content visible>Search Recipes</Button.Content>
+                  <Button.Content hidden>
+                    <Icon name='search' />
+                  </Button.Content>
                 </Button>
+
             </div>
             <div>
                 Ingredients you searched for({prevIngList.length}):
@@ -81,7 +125,7 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
                     prevIngList.map(ing => {
                         return (
                             <>
-                                {ing},
+                                {ing.text},
                             </>
                         )
                     })

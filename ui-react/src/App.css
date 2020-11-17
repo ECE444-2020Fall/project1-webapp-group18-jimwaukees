@@ -13,20 +13,65 @@
   }
 }
 
+.App-header div {
+  margin-bottom: 5px;
+}
+
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: #e0e0e0;
+  color: white;
+
+  min-height: 91vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(15px + 2vmin);
+}
+
+/* Header Menu Item CSS - Starts Here */
+.ui.secondary.pointing.menu{
+  background-color: #2ED573;
+  color: white;
+
+  height: 4em;
+
+  margin-bottom: 0;
+  padding: 0;
+
+  border-radius: 0;
+  border-color: #2ED573;
+}
+
+.ui.secondary.pointing.menu div.item.logo-space{
+  padding: 0 20px;
+}
+
+.ui.secondary.pointing.menu .logo {
+  width: 50px;
+  height: auto;
+}
+
+.ui.secondary.pointing.menu a.item{
+  color: rgba(255,255,255,0.62);
+  font-size: 17px;
+  border-bottom-width: 3px;
+}
+
+.ui.secondary.pointing.menu a.item:hover{
   color: white;
 }
 
-.App-header div {
-  margin-bottom: 10px;
+.ui.secondary.pointing.menu .active.item{
+  color: white;
+  border-color: white;
 }
+
+.ui.secondary.pointing.menu .active.item:hover{
+  color: white;
+  border-color: white;
+}
+/* Header Menu Item CSS - Ends Here */
 
 .ui.fluid.input>input {
   width: 100% !important;
@@ -34,16 +79,6 @@
 
 .search-recipe > input {
   font-size: medium;
-}
-
-.ingredients-dropdown.ui.search {
-  font-size: initial;
-  width: 600px;
-}
-
-.ingredients-dropdown-search {
-  margin-left: 10px !important;
-  height: 44px;
 }
 
 .App-link {
