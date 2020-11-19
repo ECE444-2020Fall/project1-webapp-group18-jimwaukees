@@ -20,23 +20,6 @@ function App() {
         results: []
     });
 
-    // ? Chris: I think having specialRecipe is kind of redundant since we can get the input directly from the SearchRecipes.js
-    // ? I think if we just pass in setRecipes to set the new recipe list into that component, there's no need for the other useState
-    useEffect(() => {
-        /*fetch('/get_recipes').then(response => {
-            response.json().then(data => {
-                setRecipeCount(data.count);
-                setRecipes(data.recipes);
-            });
-        });
-
-        fetch('/get_recipe').then(response => {
-            response.json().then(data => {
-                setSpecialRecipe(data.name);
-            });
-        });*/
-    }, []);
-
     const handleTabClick = (e, { name }) => {
         setActiveTab(name);
     };
@@ -51,16 +34,19 @@ function App() {
                     name='search_recipes'
                     active={activeTab === 'search_recipes'}
                     onClick={handleTabClick}
+                    data-testid="search_recipes"
                 />
                 <Menu.Item
                     name='search_ingredients'
                     active={activeTab === 'search_ingredients'}
                     onClick={handleTabClick}
+                    data-testid="search_ingredients"
                 />
                 <Menu.Item
-                    name='about_us'
-                    active={activeTab === 'about_us'}
+                    name='help'
+                    active={activeTab === 'help'}
                     onClick={handleTabClick}
+                    data-testid="help"
                 />
             </Menu>
             <header className="App-header">
@@ -80,7 +66,6 @@ function App() {
                         setRecipeResults={setRecipeResultsIng}
                     /> : 
                 <></>}
-                {activeTab === 'about_us' ? <About /> : <></>}
                 {activeTab === 'help' ? <Help /> : <></>}
             </header>
         </div>

@@ -6,17 +6,14 @@ import App from './App';
 test('renders all appropriate tabs and logo', () => {
     const component = render(<App />);
 
-    const searchTab = component.getByText(/search recipes/i);
+    const searchTab = component.getByTestId("search_recipes");
     expect(searchTab).toBeInTheDocument();
 
-    const searchIngredientsTab = component.getByText(/search ingredients/i);
+    const searchIngredientsTab = component.getByTestId("search_ingredients");
     expect(searchIngredientsTab).toBeInTheDocument();
 
-    const aboutTab = component.getByText(/about us/i);
+    const aboutTab = component.getByTestId("help");
     expect(aboutTab).toBeInTheDocument();
-
-    const helpTab = component.getByText(/help/i);
-    expect(helpTab).toBeInTheDocument();
 
     const logo = component.getByTestId("company_logo");
     expect(logo).toBeInTheDocument();
