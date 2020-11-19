@@ -7,6 +7,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Chip from '@material-ui/core/Chip';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import { Image } from 'semantic-ui-react'
 
 let ingMap = new Map();
@@ -25,8 +27,8 @@ export function RecipeDialog({ open, handleClose, data, searchedIngredients }) {
                 data.recipeDetails.usedIngredients.forEach((ing) => {
                     let match = '';
                     searchedIngredients.forEach((input) => {
-                        if (ing.name.includes(input)) {
-                            match = input
+                        if (ing.name.includes(input.value.toLowerCase())) {
+                            match = input.value;
                         }
                     });
                     list.push({ name: ing.name, searchedIng: match });
@@ -55,7 +57,7 @@ export function RecipeDialog({ open, handleClose, data, searchedIngredients }) {
     const renderSteps = (steps) => {
         return steps.map((step) => {
             return (
-                <>
+                <div data-testid="recipe_step" style={{"margin-bottom": "10px"}}>
                     <Typography color="inherit" variant="h6">
                         {"Step " + step.number}
                     </Typography>
@@ -71,10 +73,10 @@ export function RecipeDialog({ open, handleClose, data, searchedIngredients }) {
                         Length:
                         {step.length ? step.length.number + ' ' + step.length.unit : 'N/A'}
                     </Typography>
-                    <Typography color="inherit" variant="body2">
+                    <Typography color="inherit" variant="subtitle2">
                         {step.step}
                     </Typography>
-                </>
+                </div>
             );
         })
     };
@@ -90,10 +92,13 @@ export function RecipeDialog({ open, handleClose, data, searchedIngredients }) {
         >
             <DialogTitle id="dialog-title">
                 {(data && data.recipeDetails) ? data?.recipeDetails.title : data?.title}
+                <IconButton aria-label="close" onClick={handleClose} style={{"float": "right"}}>
+                    <CloseIcon />
+                </IconButton>
             </DialogTitle>
             <DialogContent>
-                <Image src={(data && data.recipeDetails) ? data?.recipeDetails.image : data?.image} size={'large'} />
-                <Typography color="inherit" variant="h5">
+                <Image src={(data && data.recipeDetails) ? data?.recipeDetails.image : data?.image} size={'large'} data-testid="recipe_image" />
+                <Typography color="inherit" variant="h5" style={{"margin-top": "10px"}}>
                     Reciepe Ingredients
                 </Typography>
                 {ingList.map((ing) => {
@@ -107,18 +112,18 @@ export function RecipeDialog({ open, handleClose, data, searchedIngredients }) {
                                 }
                                 arrow
                             >
-                                <Chip size="small" label={ing.name} color="primary" />
+                                <Chip size="small" label={ing.name} color="primary" data-testid="ingredient_pill_matched" />
                             </Tooltip>
                         );
                     }
                     return (
-                        <Chip size="small" label={ing.name} />
+                        <Chip size="small" label={ing.name} data-testid="ingredient_pill" />
                     );
                 })}
-                {((data && data.recipeInstructions && data.recipeInstructions[0].steps) ||
-                    (data && data.analyzedInstructions && data.analyzedInstructions[0].steps)) ?
+                {((data && data.recipeInstructions && data.recipeInstructions.length > 0 && data.recipeInstructions[0].steps) ||
+                    (data && data.analyzedInstructions && data.analyzedInstructions.length > 0 && data.analyzedInstructions[0].steps)) ?
                     (<>
-                        <Typography color="inherit" variant="h5">
+                        <Typography color="inherit" variant="h5" style={{"margin-top": "10px"}}>
                             Reciepe Instructions
                         </Typography>
                         {data.recipeInstructions ?

@@ -7,9 +7,9 @@ import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
-
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import './Styles/SearchIngredients.css';
-
 
 const gridStyles = makeStyles({
     gridContainer: {
@@ -20,8 +20,12 @@ const gridStyles = makeStyles({
 });
 
 const searchStyles = makeStyles({
+  root: {
+    '& .MuiFormLabel-root.Mui-focused': {
+      color: "#2ED573",
+    },
+  },
   inputRoot: {
-    color: "purple",
     "& .MuiOutlinedInput-notchedOutline": {
       borderColor: "white"
     },
@@ -30,7 +34,11 @@ const searchStyles = makeStyles({
       borderWidth: "2px"
     },
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: "#2ED573"
+      borderColor: "#2ED573",
+      color: "#2ED573"
+    },
+    '& .MuiFormLabel-root.Mui-focused': {
+      color: "#2ED573",
     },
     "&.MuiOutlinedInput-root": {
       borderRadius: "30px"
@@ -39,17 +47,21 @@ const searchStyles = makeStyles({
       backgroundColor: "white"
     }
   }
-})
+});
+
+const loaderClasses = makeStyles((theme) => ({
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
+    },
+}));
 
 export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, setRecipeResults }) {
     const [ingList, setIngList] = useState([]);
     const [options, setOptions] = useState(ingredients);
     const [openDialog, setOpenDialog] = useState(false);
     const [recipeIndex, setRecipeIndex] = useState(-1);
-
-    const handleAddition = (e,  value ) => {
-        setOptions([{ text: value, value, key: value.toLowerCase() }, ...options]);
-    };
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e,  value ) => {
         setIngList(value);
@@ -58,6 +70,7 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
     const handleSearch = async (e) => {
         let sameSearch = prevIngList.length === ingList.length && prevIngList.every((ing) => ingList.includes(ing));
         if (!sameSearch && ingList.length > 0) {
+            setLoading(true);
             let ingDict = {};
             for (var i = 0; i < ingList.length; i++) {
                 ingDict['ing' + i.toString()] = ingList[i].value.toLowerCase();
@@ -72,6 +85,7 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
             .then((res) => res.json())
             .then((data) => {setRecipeResults(data);});
 
+            setLoading(false);
             setPrevIngList(ingList);
         }
     };
@@ -85,13 +99,17 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
         setRecipeIndex(index);
     };
 
-    const { currentValues } = options;
+    const handleLoaderClose = () => {
+        setLoading(false);
+    };
+
     const gridClass = gridStyles();
     const searchClass = searchStyles();
+    const backdropClasses = loaderClasses();
 
     return (
         <>
-            <div className="dropdown-group">
+            <div className="dropdown-group" style={{"margin-top": "20px"}}>
                 <Autocomplete
                   className="ingredients-dropdown-search"
                   classes={searchClass}
@@ -119,22 +137,18 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
                 </Button>
 
             </div>
-            <div>
-                Ingredients you searched for({prevIngList.length}):
-                {
-                    prevIngList.map(ing => {
-                        return (
-                            <>
-                                {ing.text},
-                            </>
-                        )
-                    })
-                }
-            </div>
+            {recipeResults.recipes.length > 0 ? 
+                <div style={{"color": "black", "margin-top": "10px"}}>
+                    Recipes with Ingredients you searched for ({recipeResults.recipes.length}):
+                </div>
+             : <></>}
             <Grid container spacing={4} className={gridClass.gridContainer}>
                 {recipeResults.recipes.map((recipe, index) => (
-                    <Grid item xs={12} sm={6} md={4}>
-                        <Card recipeData={recipe} handleCardClick={() => handleRecipeClick(index)} />
+                    <Grid item xs={12} sm={6} md={4} data-testid="recipe_card">
+                        <Card
+                          recipeData={recipe}
+                          handleCardClick={() => handleRecipeClick(index)}
+                        />
                     </Grid>
                 ))}
             </Grid>
@@ -144,6 +158,9 @@ export function SearchIngredients({ prevIngList, setPrevIngList, recipeResults, 
                 data={recipeIndex >= 0 ? recipeResults.recipes[recipeIndex] : undefined}
                 searchedIngredients={prevIngList}
             />
+            <Backdrop className={backdropClasses.backdrop} open={loading} onClick={handleLoaderClose}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </>
     );
 }

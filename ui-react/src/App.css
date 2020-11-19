@@ -81,6 +81,14 @@
   font-size: medium;
 }
 
+.MuiChip-sizeSmall {
+  margin-right: 10px;
+}
+
+.MuiChip-labelSmall {
+  text-transform: capitalize;
+}
+
 .App-link {
   color: #61dafb;
 }
